@@ -61,7 +61,7 @@ import './PlaceForm.css';
         onInput={inputHandler}
       />
       <Button type="submit" disabled={!formState.isValid}>
-        ADD PLACE
+        Pievienot
       </Button>
     </form>
   );

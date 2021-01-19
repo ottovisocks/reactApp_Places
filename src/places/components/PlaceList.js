@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Card from '../../shared/components/UIElements/Card';
+import Button from '../../shared/components/FormElements/Button';
 import PlaceItem from './PlaceItem';
+import { AuthContext } from '../../shared/context/auth-context';
 import './PlaceList.css';
 
 const PlaceList = props => {
+    const auth = useContext(AuthContext);
+
     if (props.items.length === 0) {
         return (
-        <div className="place-list center">
-            <Card className="place-list-nofound">
-                <h2>Nav atrastas vietas. Vai vēlies pievienot vienu?</h2>
-                <button>Pievieno vietu</button>
-            </Card>
-        </div>
+            <div className="place-list center">
+                <Card>
+                    {auth.isLoggedIn && (
+                        <h2>Nav atrastas apskates vietas. Vai vēlies pievienot vienu?</h2>
+                    )}
+                    {auth.isLoggedIn && (
+                        <Button to="/places/new">Pievieno vietu</Button>
+                     )}
+                    {!auth.isLoggedIn && (
+                        <h2>Nav atrastas apskates vietas.</h2>
+                    )}
+                </Card>
+            </div>
         );
     }
 

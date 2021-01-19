@@ -1,16 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Card from '../../shared/components/UIElements/Card';
 import Button from '../../shared/components/FormElements/Button';
 import Modal from '../../shared/components/UIElements/Modal';
 import Map from '../../shared/components/UIElements/Map.js';
+import { AuthContext } from '../../shared/context/auth-context';
 import './PlaceItem.css';
 
 const PlaceItem = props => {
+    const auth = useContext(AuthContext);
+
     const [showMap, setShowMap] = useState(false);
+
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
 
     const openMapHandler = () => setShowMap(true);
 
     const closeMapHandler = () => setShowMap(false);
+
+    const showDeleteWarningHandler = () => {
+        setShowConfirmModal(true);
+    };
+
+    const cancelDeleteHandler = () => {
+        setShowConfirmModal(false);
+    };
+
+    const confirmDeleteHandler = () => {
+        setShowConfirmModal(false);
+        console.log('DELETING...');
+    };
 
     return (
         <React.Fragment>
@@ -26,6 +44,19 @@ const PlaceItem = props => {
                     <Map center={props.coordinates} zoom={16} />
                 </div>
             </Modal>
+            <Modal 
+                show={showConfirmModal}
+                onCancel={cancelDeleteHandler}
+                header="Vai esi drošs?" 
+                footerClass="place-item__modal-actions" 
+                footer={
+                    <React.Fragment>
+                        <Button inverse onClick={cancelDeleteHandler}>Atcelt</Button>
+                        <Button danger onClick={confirmDeleteHandler}>Dzēst</Button>
+                    </React.Fragment>
+                }>
+                <p>Vai tiešām vēlies dzēst šo vietu? Tā tiks neatgriezeniski dzēsta!</p>
+            </Modal>
         <li className="place-item">
             <Card className="place-item__content">
             <div className="place-item__image">
@@ -38,8 +69,12 @@ const PlaceItem = props => {
             </div>
             <div className="place-item__actions">
                 <Button inverse onClick={openMapHandler}>Apskatīt kartē</Button>
-                <Button to={`/places/${props.id}`}>Labot</Button>
-                <Button danger>Izdzēst</Button>
+                {auth.isLoggedIn && <Button to={`/places/${props.id}`}>
+                    Labot
+                    </Button>}
+                {auth.isLoggedIn && <Button danger onClick={showDeleteWarningHandler}>
+                    Izdzēst
+                    </Button>}
             </div>
             </Card>
         </li>
